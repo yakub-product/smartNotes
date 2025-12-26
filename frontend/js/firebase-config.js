@@ -4,13 +4,13 @@ import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, s
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+    apiKey: "AIzaSyAmuvDP5KPt61CvVCTEBwLG2O_bgJwXoSI",
+    authDomain: "smartnotes-e2a2b.firebaseapp.com",
+    projectId: "smartnotes-e2a2b",
+    storageBucket: "smartnotes-e2a2b.firebasestorage.app",
+    messagingSenderId: "666853593104",
+    appId: "1:666853593104:web:12a21bbd916ed5938c3a95",
+    measurementId: "G-NYBQ875S0F"
 };
 
 // Initialize Firebase
