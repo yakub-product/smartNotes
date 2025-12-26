@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartNotes Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen overflow-hidden flex">
+
+    <!-- App Loader -->
+    <div id="app-loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="w-80 border-r border-slate-800 flex flex-col bg-slate-900 z-10 hidden md:flex">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">SmartNotes</h1>
+            <button id="create-note-btn" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                New Note
+            </button>
+            <div class="mt-4 relative">
+                <input type="text" id="search-notes" class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors" placeholder="Search notes...">
+                <svg class="absolute left-3 top-2.5 h-4 w-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+        </div>
+        
+        <!-- Note List -->
+        <div id="note-list" class="flex-1 overflow-y-auto p-4 space-y-2">
+            <!-- Notes injected here -->
+            <div class="text-center text-slate-500 mt-10">Loading notes...</div>
+        </div>
+
+        <div class="p-4 border-t border-slate-800">
+            <div class="flex items-center justify-between">
+                <span id="user-email" class="text-sm text-slate-400 truncate max-w-[150px]"></span>
+                <button id="logout-btn" class="text-slate-400 hover:text-red-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col relative h-full">
+        <!-- Mobile Header -->
+        <header class="md:hidden h-16 border-b border-slate-800 flex items-center justify-between px-4 bg-slate-900">
+            <h1 class="font-bold text-lg text-blue-400">SmartNotes</h1>
+            <button id="mobile-menu-btn" class="text-slate-300 p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </header>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            <p class="text-lg">Select a note or create a new one</p>
+        </div>
+
+        <!-- Editor -->
+        <div id="editor-container" class="flex flex-col h-full hidden">
+            <div class="border-b border-slate-800 p-4 md:p-6 bg-slate-900/50">
+                <div class="flex items-center justify-between mb-2">
+                    <input type="text" id="note-title" class="bg-transparent text-2xl md:text-3xl font-bold w-full focus:outline-none placeholder-slate-600" placeholder="Untitled Note">
+                    <div class="flex items-center gap-2 ml-4">
+                        <input type="text" id="note-subject" class="bg-slate-800 border-none rounded-full px-3 py-1 text-xs text-blue-300 w-24 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Subject">
+                        <span id="save-status" class="text-xs text-slate-500 self-center">Saved</span>
+                        <button id="manual-save-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors" title="Save Now">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V4a1 1 0 10-2 0v7.586l-1.293-1.293z" />
+                                <path d="M5 17a2 2 0 01-2-2V7a2 2 0 012-2 1 1 0 010 2v8h10V7a1 1 0 112 0v8a2 2 0 01-2 2H5z" />
+                            </svg>
+                        </button>
+                        <button id="delete-note-btn" class="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800 transition-colors" title="Delete Note">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 000-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- AI Toolbar -->
+                <div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <button onclick="handleAI('summarize')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Summarize
+                    </button>
+                    <button onclick="handleAI('explain')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-purple-400 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        Explain
+                    </button>
+                    <button onclick="handleAI('quiz')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-green-400 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Quiz Me
+                    </button>
+                    <button onclick="handleAI('enhance')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-pink-400 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        Enhance
+                    </button>
+                    <button onclick="handleAI('tips')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-yellow-400 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        Study Tips
+                    </button>
+                </div>
+            </div>
+
+            <!-- Text Area -->
+            <textarea id="note-content" class="flex-1 w-full bg-slate-950 p-6 focus:outline-none resize-none text-slate-300 leading-relaxed text-lg" placeholder="Start typing your notes here..."></textarea>
+        </div>
+    </main>
+
+    <!-- AI Result Modal -->
+    <div id="ai-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+                <h3 id="ai-modal-title" class="text-xl font-semibold text-white flex gap-2 items-center">
+                    <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span> AI Assistant
+                </h3>
+                <button id="close-modal" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto bg-slate-900/30">
+                <div id="ai-loading" class="hidden flex flex-col items-center justify-center py-10">
+                    <div class="loader mb-4"></div>
+                    <p class="text-slate-400 animate-pulse">Thinking...</p>
+                </div>
+                <div id="ai-content" class="text-slate-200 whitespace-pre-wrap leading-relaxed"></div>
+            </div>
+            <div class="p-4 border-t border-slate-700 bg-slate-900/50 flex justify-end gap-2">
+                <button id="copy-ai-btn" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition-colors">Copy to Clipboard</button>
+                <button id="append-note-btn" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors">Add to Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900/90 backdrop-blur-md border-l-4 border-blue-500 text-white px-6 py-4 rounded-xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[100] border border-slate-700/50">
+        <div class="flex items-center gap-3">
+            <div id="toast-icon">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <p id="toast-message" class="text-sm font-semibold tracking-wide">Notification</p>
+        </div>
+    </div>
+
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
