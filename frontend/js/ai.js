@@ -1,5 +1,5 @@
 const generateSummary = async (noteContent) => {
-    const GROQ_API_KEY = 'gsk_VnLYqCkscG6n176X5uE7WGdyb3FYIwZ5UZXvx88BT';
+    const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
     if (!noteContent || noteContent.trim() === '') {
         throw new Error('No content to summarize');
@@ -48,7 +48,7 @@ const generateSummary = async (noteContent) => {
 };
 
 async function explainConcept(selectedText) {
-    const GROQ_API_KEY = 'gsk_VnLYqCkscG6n176X5uE7WGdyb3FYIwZ5UZXvx88BT';
+    const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
     try {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -87,7 +87,7 @@ async function explainConcept(selectedText) {
 }
 
 async function generateQuiz(noteContent) {
-    const GROQ_API_KEY = 'gsk_VnLYqCkscG6n176X5uE7WGdyb3FYIwZ5UZXvx88BT';
+    const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
     try {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -104,7 +104,7 @@ async function generateQuiz(noteContent) {
                         content: 'You are a helpful study assistant. Generate 5 multiple-choice quiz questions based on the notes provided. Format each question with the question text, 4 options (A, B, C, D), and indicate the correct answer.'
                     },
                     {
-                        role: user,
+                        role: 'user',
                         content: `Generate a quiz from these notes:\n\n${noteContent}`
                     }
                 ],
@@ -126,7 +126,7 @@ async function generateQuiz(noteContent) {
 }
 
 async function enhanceNote(noteContent) {
-    const GROQ_API_KEY = 'gsk_VnLYqCkscG6n176X5uE7WGdyb3FYIwZ5UZXvx88BT';
+    const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
     try {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -165,7 +165,7 @@ async function enhanceNote(noteContent) {
 }
 
 async function getStudyTips(noteContent, subject) {
-    const GROQ_API_KEY = 'gsk_VnLYqCkscG6n176X5uE7WGdyb3FYIwZ5UZXvx88BT';
+    const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
     try {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
