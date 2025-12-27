@@ -1,6 +1,6 @@
 import { logout, onUserStatusChanged } from './auth.js';
 import { createNote, subscribeToNotes, updateNote, deleteNote } from './notes.js';
-import { summarizeNote, explainConcept, generateQuiz, enhanceNote } from './ai.js';
+import { generateSummary, explainConcept, generateQuiz, enhanceNote } from './ai.js';
 
 let currentUser = null;
 let currentNoteId = null;
@@ -234,7 +234,7 @@ window.handleAI = async (type) => {
 
     try {
         let result = "";
-        if (type === 'summarize') result = await summarizeNote(content);
+        if (type === 'summarize') result = await generateSummary(content);
         if (type === 'explain') result = await explainConcept(textToProcess);
         if (type === 'quiz') result = await generateQuiz(content);
         if (type === 'enhance') result = await enhanceNote(content);
