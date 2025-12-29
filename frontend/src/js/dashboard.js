@@ -1,6 +1,6 @@
 import { logout, onUserStatusChanged } from './auth.js';
 import { createNote, subscribeToNotes, updateNote, deleteNote } from './notes.js';
-import { generateSummary, explainConcept, generateQuiz, enhanceNote } from './ai.js';
+import { generateSummary, explainConcept, generateQuiz, enhanceNote, getStudyTips } from './ai.js';
 
 let currentUser = null;
 let currentNoteId = null;
